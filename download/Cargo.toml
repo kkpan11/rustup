@@ -1,8 +1,8 @@
 [package]
 name = "download"
-version = "1.27.1"
-edition = "2021"
-license = "MIT OR Apache-2.0"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
 
 [features]
 default = ["reqwest-backend", "reqwest-rustls-tls", "reqwest-native-tls"]
@@ -32,3 +32,6 @@ http-body-util = "0.1.0"
 hyper = { version = "1.0", default-features = false, features = ["server", "http1"] }
 hyper-util = { version = "0.1.1", features = ["tokio"] }
 tempfile.workspace = true
+
+[lints]
+workspace = true
