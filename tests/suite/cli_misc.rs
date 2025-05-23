@@ -1,6 +1,8 @@
 //! Test cases of the rustup command that do not depend on the
 //! dist server, mostly derived from multirust/test-v2.sh
 
+#![allow(deprecated)]
+
 use std::fs;
 use std::str;
 use std::{env::consts::EXE_SUFFIX, path::Path};
@@ -113,16 +115,15 @@ async fn custom_invalid_names_with_archive_dates() {
 async fn update_all_no_update_whitespace() {
     let cx = CliTestContext::new(Scenario::SimpleV2).await;
     cx.config
-        .expect_stdout_ok(
-            &["rustup", "update", "nightly"],
-            for_host!(
-                r"
-  nightly-{} installed - 1.3.0 (hash-nightly-2)
+        .expect(["rustup", "update", "nightly"])
+        .await
+        .is_ok()
+        .with_stdout(snapbox::str![[r#"
 
-"
-            ),
-        )
-        .await;
+  nightly-[HOST_TRIPLE] installed - 1.3.0 (hash-nightly-2)
+
+
+"#]]);
 }
 
 // Issue #145
@@ -207,7 +208,7 @@ async fn multi_host_smoke_test() {
     assert_ne!(this_host_triple(), MULTI_ARCH1);
 
     let mut cx = CliTestContext::new(Scenario::MultiHost).await;
-    let toolchain = format!("nightly-{}", MULTI_ARCH1);
+    let toolchain = format!("nightly-{MULTI_ARCH1}");
     cx.config
         .expect_ok(&["rustup", "default", &toolchain, "--force-non-host"])
         .await;
